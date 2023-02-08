@@ -1,0 +1,320 @@
+
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js" integrity="sha256-H9jAz//QLkDOy/nzE9G4aYijQtkLt9FvGmdUTwBk6gs=" crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="/js/my.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+
+</head>
+
+<style>
+.save {
+ display: none;
+}
+
+#search {
+
+  background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  position: 90px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 25%; /* Full-width */
+  font-size: 13px; /* Increase font-size */
+  padding: 17px 20px 12px 20px; /* Add some padding */
+  border: 3px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+  position: relative;
+  left: 900px;
+
+}
+.center {
+  text-align: center;
+  color: red;
+}
+#table {
+  border-collapse: collapse; /* Collapse borders */
+  width: 100%; /* Full-width */
+  border: 1px solid #ddd; /* Add a grey border */
+  font-size: 18px; /* Increase font-size */
+}
+
+#table th, #table td {
+  text-align: left; /* Left-align text */
+  padding: 12px; /* Add padding */
+  white-space:nowrap;
+}
+
+#table tr {
+  /* Add a bottom border to all table rows */
+  border-bottom: 1px solid #ddd;
+}
+
+#table tr.header, #table tr:hover {
+  /* Add a grey background color to the table header and on hover */
+  background-color: #f1f1f1;
+}
+
+</style>
+
+
+
+<input type="text" id="search" placeholder="Type to search">
+
+<table id="table" cellspacing=2 cellpadding=5 border=1>
+
+
+   <tr class="header">
+    <th>TABLE_CATALOG</th>
+    <th>TABLE_SCHEMA</th>
+    <th>TABLE_NAME</th>
+    <th>COLUMN_NAME</th>
+
+    <th>TableType</th>
+
+    <th>FieldNameDescription</th>
+    <th>SampleData</th>
+    <th>ActualSource</th>
+    <th>sourceobjectname</th>
+    <th>sourcefieldname</th>
+    <th>targettransformation</th>
+    <th>LastUpdatedDate</th>
+    <th>ReviewedBy</th>
+    <th>ApprovedBy</th>
+    <th>ReviewedDate</th>
+    <th>ApprovedDate</th>
+    <th>Tagstosearchthedata</th>
+
+
+  </tr>
+
+   {% if d %}
+   {% for i in d %}
+
+   <tr id="row1">
+      <td id="catalog_row1">{{i.TABLE_CATALOG}}</td>
+      <td class="editable" data-id="{{i.TABLE_CATALOG}}" data-type="name">{{i.TABLE_SCHEMA}}</td>
+      <td class="editable" data-id="{{i.TABLE_CATALOG}}" data-type="name">{{i.TABLE_NAME}}</td>
+      <td class="editable" data-id="{{i.TABLE_CATALOG}}" data-type="name">{{i.COLUMN_NAME}}</td>
+      <td id="ttype_row1">{{i.TableType}}</td>
+      <td id="fieldname_row1">{{i.FieldNameDescription}}</td>
+      <td id="sdata_row1">{{i.SampleData}}</td>
+      <td id="adata_row1">{{i.ActualSource}}</td>
+      <td id="sobj_row1">{{i.sourceobjectname}}</td>
+      <td id="sfiled_row1">{{i.sourcefieldname}}</td>
+      <td id="target_row1">{{i.targettransformation}}</td>
+      <td id="Ldate_row1">{{i.LastUpdatedDate}}</td>
+      <td id="rb_row1">{{i.ReviewedBy}}</td>
+      <td id="aby_row1">{{i.ApprovedBy}}</td>
+      <td id="rd_row1">{{i.ReviewedDate}}</td>
+      <td id="ad_row1">{{i.ApprovedDate}}</td>
+      <td id="tagdata_row1">{{i.Tagstosearchthedata}}</td>
+
+       <td>
+      <input type="button" id="edit_button1" value="Edit" class="edit" onclick="edit_row('1')">
+      <input type="button" id="save_button1" value="Save" class="save" onclick="save_row('1')">
+      <input type="button" value="Delete" class="delete" onclick="delete_row('1')">
+      </td>
+      </tr>
+
+
+   {% endfor %}
+   {% endif %}
+</table>
+
+<script type="text/javascript">
+
+var $rows = $('#table tr');
+
+$('#search').keyup(function() {
+
+
+var val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+    reg = RegExp(val, 'i'),
+
+    text;
+
+$rows.show().filter(function() {
+    text = $(this).text().replace(/\s+/g, ' ');
+    return !reg.test(text);
+}).hide();
+
+
+});
+
+
+</script>
+<script>
+ function edit_row(no) {
+ document.getElementById("edit_button" + no).style.display = "none";
+ document.getElementById("save_button" + no).style.display = "block";
+
+ var catalog = document.getElementById("catalog_row"+no);
+ var schema = document.getElementById("schema_row"+no);
+ var name = document.getElementById("name_row"+no);
+ var cname = document.getElementById("cname_row"+no);
+ var ttype = document.getElementById("ttype_row"+no);
+ var fieldname = document.getElementById("fieldname_row"+no);
+ var sdata = document.getElementById("sdata_row"+no);
+ var adata = document.getElementById("adata_row"+no);
+ var sobj = document.getElementById("sobj_row"+no);
+ var sfiled = document.getElementById("sfiled_row"+no);
+ var target = document.getElementById("target_row"+no);
+ var Ldate = document.getElementById("Ldate_row"+no);
+ var rb = document.getElementById("rb_row"+no);
+ var aby = document.getElementById("aby_row"+no);
+ var rd = document.getElementById("rd_row"+no);
+ var ad = document.getElementById("ad_row"+no);
+ var tagdata = document.getElementById("tagdata_row"+no);
+
+
+
+
+var catalog_data = catalog.innerHTML;
+
+var schema_data = schema.innerHTML;
+console.log(schema_data)
+var name_data = name.innerHTML;
+var cname_data = cname.innerHTML;
+var ttype_data = ttype.innerHTML;
+var fieldname_data = fieldname.innerHTML;
+var sdata_data = sdata.innerHTML;
+var adata_data = adata.innerHTML;
+var sobj_data = sobj.innerHTML;
+var sfiled_data = sfiled.innerHTML;
+var target_data = target.innerHTML;
+var Ldate_data = Ldate.innerHTML;
+var rb_data = rb.innerHTML;
+var aby_data = aby.innerHTML;
+var rd_data = rd.innerHTML;
+var ad_data = ad.innerHTML;
+var tagdata_data = tagdata.innerHTML;
+
+
+
+catalog.innerHTML = "<input type='text' id='name_text"+no+"' value='"+catalog_data+"'>";
+
+schema.innerHTML = "<input type='text' id='schema_text"+no+"' value='"+schema_data+"'>";
+console.log(schema.innerHTML)
+name.innerHTML = "<input type='text' id='name_text"+no+"' value='"+name_data+"'>";
+cname.innerHTML = "<input type='text' id='cname_text"+no+"' value='"+cname_data+"'>";
+ttype.innerHTML = "<input type='text' id='ttype_text"+no+"' value='"+ttype_data+"'>";
+fieldname.innerHTML = "<input type='text' id='fieldname_text"+no+"' value='"+fieldname_data+"'>";
+sdata.innerHTML = "<input type='text' id='sdata_text"+no+"' value='"+sdata_data+"'>";
+adata.innerHTML = "<input type='text' id='adata_text"+no+"' value='"+adata_data+"'>";
+sobj.innerHTML = "<input type='text' id='sobj_text"+no+"' value='"+sobj_data+"'>";
+sfiled.innerHTML = "<input type='text' id='sfiled_text"+no+"' value='"+sfiled_data+"'>";
+target.innerHTML = "<input type='text' id='target_text"+no+"' value='"+target_data+"'>";
+Ldate.innerHTML = "<input type='text' id='Ldate_text"+no+"' value='"+Ldate_data+"'>";
+rb.innerHTML = "<input type='text' id='rb_text"+no+"' value='"+rb_data+"'>";
+aby.innerHTML = "<input type='text' id='aby_text"+no+"' value='"+aby_data+"'>";
+rd.innerHTML = "<input type='text' id='rd_text"+no+"' value='"+rd_data+"'>";
+ad.innerHTML = "<input type='text' id='ad_text"+no+"' value='"+ad_data+"'>";
+tagdata.innerHTML = "<input type='text' id='tagdata_text"+no+"' value='"+tagdata_data+"'>";
+
+}
+
+function save_row(no) {
+ var name_val = document.getElementById("name_text" + no).value;
+ var country_val = document.getElementById("country_text" + no).value;
+ var age_val = document.getElementById("age_text" + no).value;
+
+ document.getElementById("name_row" + no).innerHTML = name_val;
+ document.getElementById("country_row" + no).innerHTML = country_val;
+ document.getElementById("age_row" + no).innerHTML = age_val;
+
+ document.getElementById("edit_button" + no).style.display = "block";
+ document.getElementById("save_button" + no).style.display = "none";
+}
+
+function delete_row(no) {
+ document.getElementById("row" + no + "").outerHTML = "";
+}
+
+function add_row() {
+ var new_name = document.getElementById("new_name").value;
+ var new_country = document.getElementById("new_country").value;
+ var new_age = document.getElementById("new_age").value;
+
+ var table = document.getElementById("table");
+ var table_len = table.rows.length - 1;
+ var row = (table.insertRow(table_len).outerHTML =
+  "<tr id='row" +
+  table_len +
+  "'><td id='name_row" +
+  table_len +
+  "'>" +
+  new_name +
+  "</td><td id='country_row" +
+  table_len +
+  "'>" +
+  new_country +
+  "</td><td id='age_row" +
+  table_len +
+  "'>" +
+  new_age +
+  "</td><td><input type='button' id='edit_button" +
+  table_len +
+  "' value='Edit' class='edit' onclick='edit_row(" +
+  table_len +
+  ")'> <input type='button' id='save_button" +
+  table_len +
+  "' value='Save' class='save' onclick='save_row(" +
+  table_len +
+  ")'> <input type='button' value='Delete' class='delete' onclick='delete_row(" + table_len + ")'></td></tr>");
+
+ document.getElementById("new_name").value = "";
+ document.getElementById("new_country").value = "";
+ document.getElementById("new_age").value = "";
+}
+
+</script>
+
+<script>
+
+    <script>
+        $(document).ready(function(){
+            $(document).on("dblclick",".editable",function(){
+                var value=$(this).text();
+                var data_type=$(this).data("type");
+                var input_type="text";
+                if(data_type=="created_at")
+                {
+                    input_type="datetime-local";
+                }
+                var input="<input type='"+input_type+"' class='input-data' value='"+value+"' class='form-control'>";
+                $(this).html(input);
+                $(this).removeClass("editable")
+            });
+
+            $(document).on("blur",".input-data",function(){
+                var value=$(this).val();
+                var td=$(this).parent("td");
+                $(this).remove();
+                td.html(value);
+                td.addClass("editable");
+                var type=td.data("type");
+                sendToServer(td.data("id"),value,type);
+            });
+            $(document).on("keypress",".input-data",function(e){
+                var key=e.which;
+                if(key==13){
+                    var value=$(this).val();
+                    var td=$(this).parent("td");
+                    $(this).remove();
+                    td.html(value);
+                    td.addClass("editable");
+                   var type=td.data("type");
+                   sendToServer(td.data("id"),value,type);
+                }
+            });
+
+
+        });
+    </script>
+</script>

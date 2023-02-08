@@ -1,0 +1,93 @@
+
+<div class="container">
+  <div class="form-group col-md-4 offset-4">
+
+      <input type="date" id="min-date" class="form-control date-range-filter" value="yyyy-mm-dd" placeholder="From:">
+
+
+
+    <input type="date" id="max-date" class="form-control date-range-filter" value="yyyy-mm-dd" placeholder="To:">
+
+
+  </div>
+</div>
+
+<table id="my-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Created At</th>
+      <th>end At</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <th>Bob</th>
+      <th>2-04-2020 00:00:00.0000000</th>
+      <th>2-08-2022 00:00:00.0000000</th>
+
+      <th>2</th>
+      <th>Jane</th>
+      <th>3-02-2015 00:00:00.0000000</th>
+      <th>2-08-2017 00:00:00.0000000</th>
+
+      <th>3</th>
+      <th>Jill</th>
+      <th>4-02-2015 00:00:00.0000000</th>
+      <th>2-08-2017 00:00:00.0000000</th>
+
+      <th>4</th>
+      <th>Joe</th>
+      <th>2-08-2013 00:00:00.0000000</th>
+      <th>2-08-2018 00:00:00.0000000</th>
+    </tr>
+  </tbody>
+</table>
+
+  <script src="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/dt-1.10.15/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/dt-1.10.15/datatables.min.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
+
+<script>
+
+// Bootstrap datepicker
+$('.input-daterange input').each(function() {
+  $(this).datepicker('clearDates');
+});
+
+// Set up your table
+table = $('#my-table').DataTable({
+  paging: false,
+  info: false
+});
+
+// Extend dataTables search
+$.fn.dataTable.ext.search.push(
+  function(settings, data, dataIndex) {
+    var min = $('#min-date').val();
+    var max = $('#max-date').val();
+    var createdAt = data[2] || 0; // Our date column in the table
+    var endAt = data[3] || 0; // Our date column in the table
+
+
+    if (
+      (min == "" || max == "") ||
+      (moment(createdAt).isSameOrAfter(min) && moment(endAt).isSameOrBefore(max))
+    ) {
+      return true;
+    }
+    return false;
+  }
+);
+
+// Re-draw the table when the a date range filter changes
+$('.date-range-filter').change(function() {
+  table.draw();
+});
+
+$('#my-table_filter').hide();
+</script>

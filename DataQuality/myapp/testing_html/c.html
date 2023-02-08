@@ -1,0 +1,71 @@
+
+</style>
+<html>
+<style>
+    .save {
+ display: none;
+}
+</style>
+<head>
+
+</head>
+
+<body>
+
+<table align='center' cellspacing=2 cellpadding=5 id="data_table" border=1>
+<tr>
+<th>Name</th>
+<th>Country</th>
+
+</tr>
+
+<tr id="row1">
+<td id="name_row1">Ankit</td>
+<td id="country_row1">India</td>
+ <td id="siri_row1">India</td>
+
+<td>
+<input type="button" id="edit_button1" value="Edit" class="edit" onclick="edit_row('1')">
+<input type="button" id="save_button1" value="Save" class="save" onclick="save_row('1')">
+<input type="button" value="Delete" class="delete" onclick="delete_row('1')">
+</td>
+</tr>
+
+
+
+
+
+
+
+</table>
+
+</body>
+</html>
+
+<script>
+function edit_row(no)
+{
+ document.getElementById("edit_button"+no).style.display="none";
+ document.getElementById("save_button"+no).style.display="block";
+
+ var name=document.getElementById("name_row"+no);
+ var country=document.getElementById("country_row"+no);
+ var siri=document.getElementById("siri_row"+no);
+
+
+
+ var name_data=name.innerHTML;
+ var country_data=country.innerHTML;
+ var siri_data=siri.innerHTML;
+console.log(siri_data)
+
+
+ name.innerHTML="<input type='text' id='name_text"+no+"' value='"+name_data+"'>";
+ country.innerHTML="<input type='text' id='country_text"+no+"' value='"+country_data+"'>";
+ siri.innerHTML="<input type='text' id='country_text"+no+"' value='"+siri_data+"'>";
+
+
+}
+
+
+</script>

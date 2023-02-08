@@ -1,0 +1,290 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<style>
+
+  /* general styles */
+
+body {
+  font-size: 13px;
+  padding: 22px 42px;
+}
+
+h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.employee-table {
+  display: table;
+}
+/* form related styles */
+
+.start-end-dates {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.date-controller {
+  float: left;
+}
+
+.start-date {
+  margin-right: 10px;
+}
+
+.end-date {
+  margin-right: 6px;
+}
+
+form input,
+button {
+  height: 28px;
+}
+
+.datepicker {
+  width: 140px;
+  border: 1px solid #CCC;
+  padding: 0 5px;
+  box-sizing: border-box;
+}
+
+.ng-dirty input.ng-invalid {
+  border: 1px solid #B20000;
+}
+
+.ng-dirty input.ng-valid {
+  border: 1px solid #00B233;
+}
+
+button:focus {
+  outline: none;
+}
+
+button {
+  margin-top: 20px;
+  border: 1px solid #DDD;
+  background-color: #EFEFEF;
+  color: #CCC;
+  font-weight: bold;
+  width: 71px;
+}
+
+.ng-valid button {
+  border: 1px solid #1f60ac;
+  background-color: #4a90e2;
+  color: #FFF;
+}
+/* listing/table styles */
+
+.heading {
+  font-weight: bold;
+}
+
+.row {
+  display: table-row;
+}
+
+.columns {
+  display: table-cell;
+  width: 140px;
+  padding: 8px 0;
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.col-email,
+.col-phone {
+  width: 170px;
+}
+</style>
+
+
+<body ng-app="employeeList" class="employee-table">
+  <div ng-controller="EmployeeController as employee">
+    <form name="filterByDate" class="start-end-dates" novalidate>
+      <div class="date-controller start-date">
+        <h2>Joined - Start Date:</h2>
+        <input ng-model="startDate" name="startDate" type="text" class="datepicker" readonly="readonly" string-to-timestamp required />
+      </div>
+      {{startDate}}
+      <div class="date-controller end-date">
+        <h2>Joined - End Date:</h2>
+        <input ng-model="endDate" name="endDate" type="text" class="datepicker" readonly="readonly" string-to-timestamp required/>
+      </div>
+      <div class="action date-controller">
+        <button ng-disabled="filterByDate.$invalid" ng-model="applyFilter" ng-click="runFilter=true">Apply</button>
+      </div>
+    </form>
+    <!-- end of date controls form -->
+
+    <div class="heading row">
+      <div class="columns col-name">Name</div>
+      <div class="columns col-email">Email</div>
+      <div class="columns col-phone">Phone #</div>
+      <div class="columns col-joined">Joined</div>
+    </div>
+    <!-- end of heading row-->
+
+    <div ng-repeat="person in people | orderBy:lastNameSorter" class="row" ng-hide="runFilter && joinedDateFilter(joinedUnix(person),startDate,endDate)">
+      <div class="columns col-name">
+        {{person.name}}
+      </div>
+      <div class="columns col-email">
+        {{person.email}}
+      </div>
+      <div class="columns col-phone">
+        {{person.phone | tel}}
+      </div>
+      <div class="columns col-joined">
+        {{person.joined | dateFormat | date:'mediumDate'}}
+      </div>
+    </div>
+    <!-- end of ng-repeat row -->
+  </div>
+  <!-- end of ng-controller -->
+
+
+</body>
+
+
+<script>
+
+
+  //datepicker and a place for additional jquery
+$('.datepicker').datepicker({
+  dateFormat: "M d, yy",
+  defaultDate: new Date(2014, 2, 1)
+  /*
+   * TODO: would be cool to grab the oldest 'joined' from people and have that be the default start date
+   * Also should be checking to ensure that the end date is not less than the start date
+   * date-min-limit
+   * date-max-limit
+   * date-set
+  */
+});
+
+//angular code
+(function(){
+    var app = angular.module('employeeList', []);
+
+    app.controller('EmployeeController', function($scope){
+        $scope.people = people;
+
+        // returns last name for orderBy
+        $scope.lastNameSorter = function(person){
+          return person['name'].split(' ')[1];
+        }
+
+        // converts person.joined to unix timestamp so we can run some operations later
+        $scope.joinedUnix = function(person) {
+          return Date.parse(person['joined']);
+        }
+
+        // set the filter to false so that the list does not update until "Apply" is clicked
+        $scope.runFilter = false;
+
+        // the magic happens here! grabs the joined date, start date, and end date returns boolean for ng-hide
+        $scope.joinedDateFilter = function(joined,startDate,endDate) {
+          if(joined < startDate || joined > endDate) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+    }); // end of EmployeeController
+
+    // from stack overflow article
+    // converts start and end dates to unix timestamp
+    app.directive('stringToTimestamp', function() {
+        return {
+            require: 'ngModel',
+            link: function(scope, ele, attr, ngModel) {
+                // view to model
+                ngModel.$parsers.push(function(value) {
+                    return Date.parse(value);
+                });
+            }
+        }
+    });
+
+    // this feels wrong but for the sake of time I am leaving it
+    // allows for dateFormat filter for person.joined in view
+    app.filter('dateFormat', function () {
+      return function (dateFormat) {
+        var value = new Date(dateFormat);
+        return value;
+      }
+    });
+
+    //refactor of code snippet from below post (for the purposes of this challenge i trimmed it down)
+    //http://stackoverflow.com/questions/12700145/format-telephone-and-credit-card-numbers-in-angularjs
+    app.filter('tel', function () {
+      return function (tel) {
+        // convert to string
+        var value = tel.toString().trim();
+        // grab first three characters
+        var city = value.slice(0, 3);
+        // grab what is left
+        var number = value.slice(3);
+        // city - first three of number - what is left
+        return city + "-" + number.slice(0, 3) + '-' + number.slice(3);
+      };
+    });
+
+
+  var people = [
+    {
+        name: "Mike Jenson",
+        email: "mike_j@xyz.com",
+        phone: "9433550193",
+        joined: "5/23/2014"
+    },
+    {
+        name: "Jim Stevens",
+        email: "jim_s@xyz.com",
+        phone: "1299331944",
+        joined: "5/22/2014"
+    },
+    {
+        name: "Paul Smith",
+        email: "paul_s@xyz.com",
+        phone: "4351289654",
+        joined: "4/14/2014"
+    },
+    {
+        name: "Sarah Andrews",
+        email: "sarah_a@xyz.com",
+        phone: "1299332944",
+        joined: "3/15/2014"
+    },
+    {
+        name: "Edward O'Brien",
+        email: "edward_ob@xyz.com",
+        phone: "4782456897",
+        joined: "3/27/2014"
+    },
+    {
+        name: "Nicole Plano",
+        email: "nicole_p@xyz.com",
+        phone: "6657831564",
+        joined: "3/30/2013"
+    },
+    {
+        name: "Peter Min",
+        email: "peter_m@xyz.com",
+        phone: "8893923938",
+        joined: "1/07/2013"
+    },
+    {
+        name: "Aaron Jackson",
+        email: "aaron_j@xyz.com",
+        phone: "6174896315",
+        joined: "4/11/2014"
+    }
+  ]; // end of people var
+
+})(); // end of function wrapper
+</script>

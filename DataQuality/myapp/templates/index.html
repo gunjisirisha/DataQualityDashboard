@@ -1,0 +1,224 @@
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js" integrity="sha256-H9jAz//QLkDOy/nzE9G4aYijQtkLt9FvGmdUTwBk6gs=" crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="/js/my.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+<h1 class="center">Data Catalogue Dashboard</h1>
+<style>
+
+#search {
+
+  background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  position: 90px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 25%; /* Full-width */
+  font-size: 13px; /* Increase font-size */
+  padding: 17px 20px 12px 20px; /* Add some padding */
+  border: 3px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+  position: relative;
+  left: 900px;
+
+}
+.center {
+  text-align: center;
+  color: red;
+}
+#table {
+  border-collapse: collapse; /* Collapse borders */
+  width: 100%; /* Full-width */
+  border: 1px solid #ddd; /* Add a grey border */
+  font-size: 18px; /* Increase font-size */
+}
+
+#table th, #table td {
+  text-align: left; /* Left-align text */
+  padding: 12px; /* Add padding */
+  white-space:nowrap;
+}
+
+#table tr {
+  /* Add a bottom border to all table rows */
+  border-bottom: 1px solid #ddd;
+}
+
+#table tr.header, #table tr:hover {
+  /* Add a grey background color to the table header and on hover */
+  background-color: #f1f1f1;
+}
+
+</style>
+
+<div class="form-group col-md-4 offset-4">
+    <label>start date</label>
+    <input type="date" id="datePicker" class="form-control date-range">
+        <label>end date</label>
+        <input type="date" id="datePicker1" class="form-control date-range">
+        </div>
+        <div class="form-group offset-5">
+            <button class="btn btn-success " id="hide">search</button>
+        </div>
+
+<input type="text" id="search" placeholder="Type to search">
+
+<table id="table">
+
+
+   <tr class="header">
+    <th>TABLE_CATALOG</th>
+    <th>TABLE_SCHEMA</th>
+    <th>TABLE_NAME</th>
+    <th>COLUMN_NAME</th>
+    <th>ORDINAL_POSITION</th>
+    <th>CHARACTER_SET_NAME</th>
+    <th>COLLATION_NAME</th>
+    <th>TableType</th>
+    <th>FieldName</th>
+    <th>FieldNameDescription</th>
+    <th>SampleData</th>
+    <th>ActualSource</th>
+    <th>LastUpdatedDate</th>
+    <th>ReviewedBy</th>
+    <th>ApprovedBy</th>
+    <th>ReviewedDate</th>
+    <th>ApprovedDate</th>
+    <th>Tagstosearchthedata</th>
+    <th>sourceobjectname</th>
+    <th>sourcefieldname</th>
+    <th>targettransformation</th>
+
+  </tr>
+
+   {% if d %}
+   {% for i in d %}
+
+   <tr>
+      <td>{{i.TABLE_CATALOG}}</td>
+      <td>{{i.TABLE_SCHEMA}}</td>
+      <td>{{i.TABLE_NAME}}</td>
+      <td>{{i.COLUMN_NAME}}</td>
+      <td>{{i.ORDINAL_POSITION}}</td>
+      <td>{{i.CHARACTER_SET_NAME}}</td>
+      <td>{{i.COLLATION_NAME}}</td>
+      <td>{{i.TableType}}</td>
+      <td>{{i.FieldName}}</td>
+      <td>{{i.FieldNameDescription}}</td>
+      <td>{{i.SampleData}}</td>
+      <td>{{i.ActualSource}}</td>
+      <td>{{i.LastUpdatedDate}}</td>
+      <td>{{i.ReviewedBy}}</td>
+      <td>{{i.ApprovedBy}}</td>
+      <td>{{i.ReviewedDate}}</td>
+       <td>{{i.ApprovedDate}}</td>
+      <td>{{i.Tagstosearchthedata}}</td>
+      <td>{{i.sourceobjectname}}</td>
+      <td>{{i.sourcefieldname}}</td>
+      <td>{{i.targettransformation}}</td>
+
+   </tr>
+   {% endfor %}
+   {% endif %}
+</table>
+
+<script type="text/javascript">
+
+var $rows = $('#table tr');
+
+$('#search').keyup(function() {
+
+
+var val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+    reg = RegExp(val, 'i'),
+
+    text;
+
+$rows.show().filter(function() {
+    text = $(this).text().replace(/\s+/g, ' ');
+    return !reg.test(text);
+}).hide();
+
+
+});
+
+
+</script>
+
+
+
+
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap.datepicker-fork/1.3.0/js/bootstrap-datepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap.datepicker-fork/1.3.0/js/locales/bootstrap-datepicker.it.js"></script>
+    <script type="text/javascript" src=" https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
+<script>
+
+table = $('#table').DataTable({
+console.log("coming to date picket11")
+  paging: false,
+  info: false
+});
+
+// Extend dataTables search
+$.fn.dataTable.ext.search.push(
+  function(settings, data, dataIndex) {
+    console.log("coming to date picket")
+    var min = $('#datePicker').val();
+    var max = $('#datePicker1').val();
+
+    var myTab = document.getElementById('table');
+
+    var ages = [];
+
+    for (i = 1; i < myTab.rows.length; i++) {
+    var x = document.getElementById("table").getElementsByTagName("td");
+
+   var currentRow = myTab.rows[i];
+   var ageCell = currentRow.cells[5];
+   var datecol = currentRow.cells[7];
+
+   console.log(datecol)
+
+    var birthday = currentRow.cells[7] || 0; // Our date column in the table
+    console.log(birthday)
+    if (
+      (min == "" || max == "") ||
+      (moment(birthday).isSameOrAfter(min) && moment(birthday).isSameOrBefore(max))
+    ) {
+      return true;
+    }
+    return false;
+  }
+);
+
+// Re-draw the table when the a date range filter changes
+$('#hide').click(function(){
+table.draw();
+})
+// Re-draw the table when the a date range filter changes
+$('.date-range').change(function() {
+  //table.draw();
+});
+}
+</script>
